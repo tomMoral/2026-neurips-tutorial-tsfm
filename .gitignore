@@ -1,10 +1,19 @@
-__pycache__
+.ipynb_checkpoints
+
 .DS_Store
+
+*.pq
+*.xls
+*.csv
 *.pyc
-**/.ipynb_checkpoints
-*.mp4
-**/joblib
-*.data
-**/data
-**/wandb
-/02-advanced_sklearn/model.html
+
+# downloaded datasets
+*.tar.gz
+*.tgz
+*.zip
+
+# forecasts cached by tsfm_utils.use_cache
+.cache/
+
+# source material, kept locally and never committed
+inspiration/

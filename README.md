@@ -1,53 +1,37 @@
-# Install and prepare
+# Time series foundation models: a hands-on tutorial
 
-- github accounts
-- packages:
-    - `statsmodels`
+Hands-on material for the NeurIPS Paris tutorial on time series foundation
+models (TSFMs). It has three parts: forecasting, classification with Mantis,
+and EEG foundation models.
 
-## What are time series problems
-## Forecasting co2 adding delays or not
-## Classifying eeg with covariance and nearest centroid
+## Layout
 
-Multivariate
+The repository is flat, with one notebook per part at its root.
 
-## Segmentation
-Détection de rupture (package ruptures)
+| Notebook | Topic |
+|---|---|
+| [01-forecasting](01-forecasting.ipynb) | Zero-shot forecasting with Chronos, Chronos-2, TimesFM 3, TiRex-2, Timestral, t0 and TabICL on the Paris bike counters: evaluation, autoregressive or direct decoding, patch size, multivariate, covariates, many sites and long contexts |
 
-## Detection
-Anomalie détection
-Metrics between time series
-Time series features 
-Motif détection with csc
-Pandas 
-Application with challenge of forecasting with GitHub 
-Give ref to book tsaz 
-# Packages 
+- `tsfm_utils.py`: the data loaders, the metrics and one wrapper per model,
+  all with the same `predict(context, horizon)` method.
+- `data/`: the bike counts and the Paris weather (Open-Meteo, CC BY 4.0).
+- `solutions/`: the exercise solutions.
+- `notes/`: the plan of the session and the model cards.
 
-## Forecasting
-- look at https://pyts.readthedocs.io/en/stable/auto_examples/index.html#decomposing-time-series
-- https://tslearn.readthedocs.io/en/stable/
-- https://tsfresh.readthedocs.io/en/latest/
-- https://towardsdatascience.com/7-libraries-that-help-in-time-series-problems-d59473e48ddd
-- https://github.com/salesforce/Merlion
-- https://facebook.github.io/prophet/ 
+The notebooks are meant for a GPU runtime on Colab. They also run on CPU, more
+slowly.
 
-## Segmentation
+## Setup
 
-- ruptures
+```bash
+mamba env create -f environment.yml
+conda activate ml-time-series
+```
 
-## 
+Each notebook also opens on Colab from the badge at its top.
 
+## Contributing
 
-#### Note Alex
-Bcg
-What are time series problems
-Forecasting co2 adding delays or not
-Classifying eeg with covariance and nearest centroid
-Détection de rupture 
-Anomalie détection
-Metrics between time series
-Time series features 
-Motif détection with csc
-Pandas 
-Application with challenge of forecasting with GitHub 
-Give ref to book tsaz 
+See [CONTRIBUTING.md](CONTRIBUTING.md). The `Notebooks` workflow checks the
+notebook conventions and runs every notebook with its exercises replaced by
+their solutions.

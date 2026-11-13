@@ -1,0 +1,48 @@
+# Conda/mamba environment for the time series foundation models tutorial.
+#
+#   mamba env create -f environment.yml      # or: conda env create -f environment.yml
+#   conda activate ml-time-series
+#   python -m ipykernel install --user --name ml-time-series
+#
+# Everything available on conda-forge is installed from there; the rest comes
+# from PyPI in the `pip:` block.
+#
+# GPU: torch below is the default (CPU on Linux/Windows, Metal/MPS on macOS).
+# For CUDA on Linux, install torch first from https://pytorch.org/get-started/,
+# or run the foundation-model notebooks on Colab.
+
+name: ml-time-series
+channels:
+  - conda-forge
+  - nodefaults
+
+dependencies:
+  - python=3.12
+  - pip
+
+  # --- Scientific stack ------------------------------------------------------
+  - numpy
+  - pandas
+  - pyarrow                  # parquet data files
+  - matplotlib
+  - scikit-learn>=1.6
+  - joblib                   # forecast cache of tsfm_utils
+  - folium                   # map of the bike counters
+  - pytorch                  # foundation models
+
+  # --- Notebooks ------------------------------------------------------------
+  - jupyterlab
+  - ipykernel
+
+  # --- Dev tooling ------------------------------------------------------------
+  - pre-commit               # hooks of .pre-commit-config.yaml
+
+  - pip:
+      # foundation models
+      - chronos-forecasting
+      - timesfm[torch]
+      - tirex-2
+      - timestral @ git+https://github.com/mistralai/timestral.git
+      - tfc-t0[torch]>=0.6.0
+      - tabicl
+      - mantis-tsfm      # classification part

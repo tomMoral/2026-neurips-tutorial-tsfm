@@ -1,0 +1,14 @@
+repos:
+- repo: local
+  hooks:
+    - id: strip-outputs
+      name: strip notebook outputs
+      entry: python tools/strip_outputs.py
+      language: system
+      files: \.ipynb$
+    - id: check-notebooks
+      name: check notebook conventions
+      entry: python tools/check_notebooks.py
+      language: system
+      files: (\.ipynb|^solutions/.*\.py)$
+      pass_filenames: false

@@ -1,0 +1,10 @@
+rng = np.random.default_rng(0)
+days = weather.groupby(weather.index.normalize())
+shuffled_days = rng.permutation(list(days.groups))
+placebo = pd.concat([days.get_group(day) for day in shuffled_days])
+placebo = placebo.iloc[:len(weather)].set_axis(weather.index)
+
+placebo_past, placebo_future = tu.make_windows(placebo, origins, context_length, horizon)
+placebo_windows = np.concatenate([placebo_past, placebo_future], axis=-1)
+q = t0.predict(contexts, horizon, future_covariates=np.concatenate([calendar_windows, placebo_windows], axis=1))
+tu.score(futures, q, contexts)
