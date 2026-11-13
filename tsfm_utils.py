@@ -444,14 +444,17 @@ class TabICL(Forecaster):
 
     name = "TabICL"
 
-    def __init__(self, max_context=2048):
+    def __init__(self, max_context=2048, n_estimators=8):
         self.max_context = max_context
+        self.n_estimators = n_estimators  # ensemble of views of the table, averaged
 
     def load(self):
         from tabicl.forecast import TabICLForecaster, _dispatch
 
         _dispatch.tqdm = lambda iterable, **kwargs: iterable  # no progress bar per series
-        self.forecaster = TabICLForecaster(max_context_length=self.max_context)
+        self.forecaster = TabICLForecaster(
+            max_context_length=self.max_context, tabicl_config={"n_estimators": self.n_estimators},
+        )
 
     def forecast(self, context, horizon, future_covariates=None, origins=None, freq="1h"):
         """``origins`` are the UTC times of the first forecast step, one per series."""
