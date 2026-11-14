@@ -18,7 +18,9 @@ Models that use covariates also take ``past_covariates``, shaped
 ``future_covariates``, shaped ``(n_series, n_covariates, n_timesteps + horizon)``,
 known over the context and the horizon.
 """
+import hashlib
 import logging
+from pathlib import Path
 
 import joblib
 import numpy as np
@@ -189,10 +191,17 @@ _memory = joblib.Memory(None, verbose=0)
 def use_cache(location=".cache"):
     """Store the forecasts on disk, so that the next run reuses them.
 
-    Delete the folder to recompute them, or pass ``location=None`` to turn the cache off.
+    Editing this file clears the cache. Delete the folder to recompute them, or pass
+    ``location=None`` to turn the cache off.
     """
     global _memory
     _memory = joblib.Memory(location, verbose=0)
+    _memory.cache(_clear_cache)(hashlib.sha256(Path(__file__).read_bytes()).hexdigest())
+
+
+def _clear_cache(file_hash):
+    # Only runs for a new hash
+    _memory.cache(_forecast).clear(warn=False)
 
 
 def _forecast(name, settings, model, context, horizon, kwargs):
