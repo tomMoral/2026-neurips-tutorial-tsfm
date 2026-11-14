@@ -101,9 +101,9 @@ Solution: `solutions/cv-1_target-distribution.py`
 - Every package a notebook imports is listed in `environment.yml`.
 - A cell that fails on purpose carries the `raises-exception` cell tag.
   Say in the text that it is expected to fail.
-- A notebook that needs a GPU sets `"accelerator": "GPU"` in its notebook
-  metadata. Colab then opens it on a GPU runtime, and CI skips it, because
-  its runners have no GPU.
+- A notebook meant for a GPU sets `"accelerator": "GPU"` in its notebook
+  metadata, so that Colab opens it on a GPU runtime. It must still run on a
+  CPU, as CI runners have no GPU, for instance with a lighter fast mode.
 - Fix the random seeds (`random_state`, `np.random.default_rng(0)`) so that the
   numbers quoted in the text match a fresh run.
 
