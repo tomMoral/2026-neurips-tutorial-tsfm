@@ -44,5 +44,5 @@ dependencies:
       - tirex-2
       - timestral @ git+https://github.com/mistralai/timestral.git
       - tfc-t0[torch]>=0.6.0
-      - tabicl
+      - "tabicl[forecast]"
       - mantis-tsfm      # classification part
