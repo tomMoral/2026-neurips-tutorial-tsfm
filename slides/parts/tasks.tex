@@ -1,0 +1,144 @@
+\sectionframe{Setups and tasks}{What we predict, and how we check it}
+
+\begin{frame}{The same data supports many tasks}
+  \begin{center}
+    \renewcommand{\arraystretch}{1.15}
+    \small
+    \begin{tabular}{llll}
+      \toprule
+      \head{Task} & \head{Input} & \head{Output} & \head{Example} \\
+      \midrule
+      \alert{Forecasting} & the past of a series & its future & bikes tomorrow \\
+      \alert{Classification} & a whole series & a label & sleep stage of an EEG epoch \\
+      Regression & a whole series & a number & age from an ECG \\
+      Anomaly detection & a series & flagged times & a broken counter \\
+      Imputation & a series with gaps & the missing values & offline weeks \\
+      Clustering & many series & groups & commute or leisure counters \\
+      \bottomrule
+    \end{tabular}
+  \end{center}
+  \takeaway{Part 1 covers forecasting, parts 2 and 3 cover classification.}
+\end{frame}
+
+\begin{frame}{Forecasting predicts the future from the past, up to a horizon}
+  \begin{columns}[c]
+    \column{.6\textwidth}
+    \figtodo{one forecast on Sébastopol, context and horizon shaded (notebook \S2)}
+    \column{.36\textwidth}
+    \begin{itemize}
+      \item \textbf{Context}: the history the model reads.
+      \item \textbf{Origin}: the last observed time.
+      \item \textbf{Horizon}: how many steps ahead.
+      \item \textbf{Lead time}: the gap from the origin to a given step.
+    \end{itemize}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{A point forecast hides the uncertainty, so we predict distributions}
+  \begin{columns}[c]
+    \column{.6\textwidth}
+    \figtodo{fan chart with the 10, 50 and 90\% quantiles (notebook \S2)}
+    \column{.36\textwidth}
+    \begin{itemize}
+      \item The median as the point forecast.
+      \item Quantiles give prediction intervals.
+      \item Sample paths give joint scenarios.
+    \end{itemize}
+  \end{columns}
+  \takeaway{A forecast without its uncertainty cannot support a decision.}
+\end{frame}
+
+\begin{frame}{Forecasting setups multiply: univariate, multivariate, with covariates, across series}
+  \begin{columns}[T]
+    \column{.48\textwidth}
+    \begin{block}{Univariate}
+      One counter, its own past only. \muted{Notebook \S4}
+    \end{block}
+    \begin{block}{Multivariate}
+      Both directions of one street, forecast jointly. \muted{\S7}
+    \end{block}
+    \column{.48\textwidth}
+    \begin{alertblock}{With covariates}
+      Calendar known ahead, weather known only in the past. \muted{\S8, \S9}
+    \end{alertblock}
+    \begin{alertblock}{Many series}
+      The 128 counters of Paris at once. \muted{\S10}
+    \end{alertblock}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Local models fit each series, global models learn across series}
+  \begin{columns}[T]
+    \column{.48\textwidth}
+    \begin{exampleblock}{Local}
+      ARIMA, ETS: one small model per series, fitted on its own history.
+    \end{exampleblock}
+    \column{.48\textwidth}
+    \begin{block}{Global}
+      One model trained on a panel of series, shared across all of them.
+    \end{block}
+  \end{columns}
+  \vskip2mm
+  A foundation model is a global model trained on a very wide panel, then used on
+  series it never saw.
+  \takeaway{The wider the panel, the less each new series has to teach.}
+\end{frame}
+
+\begin{frame}{Classification assigns a label to a whole series}
+  \begin{itemize}
+    \item Activity from the accelerometer of a phone.
+    \item Sleep stage from a 30 s window of EEG.
+    \item Type of a variable star from its light curve.
+  \end{itemize}
+  \vskip2mm
+  The model reads the whole window at once, there is no future to predict.
+  \takeaway{Parts 2 (Mantis) and 3 (EEG) are about this task.}
+\end{frame}
+
+\begin{frame}{Evaluation must respect time}
+  \begin{columns}[c]
+    \column{.6\textwidth}
+    \figtodo{the 2025 forecast origins of the notebook on a timeline (\S4)}
+    \column{.36\textwidth}
+    \begin{itemize}
+      \item A random split leaks the future into training.
+      \item Rolling origin: forecast from several dates, with only the past
+        before each one.
+    \end{itemize}
+  \end{columns}
+  \takeaway{Test on the future, from many origins.}
+\end{frame}
+
+\begin{frame}{Scaled metrics make series comparable}
+  \begin{itemize}
+    \item \textbf{MASE}: the error relative to the seasonal naive forecast,
+      $\displaystyle \frac{\frac1H\sum_h |y_{T+h}-\hat y_{T+h}|}{\frac1{T-m}\sum_{t>m} |y_t - y_{t-m}|}$.
+      Below 1 beats the baseline.
+    \item \textbf{WQL}: the quantile loss summed over the quantile levels $q$,
+      $\rho_q(y, \hat y_q) = \max\big(q(y-\hat y_q), (q-1)(y-\hat y_q)\big)$,
+      scaled by $\sum |y|$. It rewards sharp and calibrated quantiles.
+    \item \textbf{Coverage}: how often the truth falls in the 80\% interval.
+      It should be close to 0.8.
+  \end{itemize}
+  \takeaway{Point accuracy and calibration are measured separately.}
+\end{frame}
+
+\begin{frame}{Always compare with the seasonal naive baseline}
+  \begin{columns}[c]
+    \column{.5\textwidth}
+    \begin{center}
+      \begin{tabular}{lc}
+        \toprule
+        \head{Forecast, 2-week horizon} & \head{MASE} \\
+        \midrule
+        Seasonal naive (last week again) & 1.155 \\
+        Best foundation model & \alert{0.926} \\
+        \bottomrule
+      \end{tabular}
+    \end{center}
+    \column{.44\textwidth}
+    Boulevard de Sébastopol, hourly, rolling origins in 2025.
+    \muted{Notebook \S4}
+  \end{columns}
+  \takeaway{A gain of 20\%, not an order of magnitude.}
+\end{frame}

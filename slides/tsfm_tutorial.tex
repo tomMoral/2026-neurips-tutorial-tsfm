@@ -1,0 +1,27 @@
+\documentclass[aspectratio=169]{beamer}
+\usetheme{tm}
+\usepackage{qrcode}
+\graphicspath{{img/}{fig/}}
+
+% Small ochre tag for the models made in Paris
+\newcommand{\paris}{\tikz[baseline=-.6ex]\node[fill=tmaccent!15, text=tmaccent, rounded corners=1pt,
+  inner sep=1.5pt, font=\tiny\bfseries]{Paris};}
+\newcommand{\repo}{https://github.com/tomMoral/2026-neurips-tutorial-tsfm}
+
+\title[Time series foundation models · NeurIPS Paris 2026]{Time series foundation models,\\from Paris bikes to EEG}
+\author{Thomas Moreau}
+\institute{Inria, MIND team}
+\kicker{NeurIPS Paris 2026 · Tutorial}
+\titlegraphic{\qrcode[height=1.6cm]{\repo}\hspace{6mm}\includegraphics[height=1cm]{inria}}
+
+\begin{document}
+
+\begin{frame}[plain]
+  \titlepage
+\end{frame}
+
+\input{parts/opening}
+\input{parts/time_series}
+\input{parts/tasks}
+
+\end{document}

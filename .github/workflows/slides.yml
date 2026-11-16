@@ -1,0 +1,40 @@
+name: Slides
+
+# Compiles the beamer deck in slides/. On main, the PDF replaces the asset of
+# the `slides` release, which the README links to.
+
+on:
+  pull_request:
+    paths: [slides/**, .github/workflows/slides.yml]
+  push:
+    branches: [main]
+    paths: [slides/**, .github/workflows/slides.yml]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: xu-cheng/latex-action@v3
+        with:
+          root_file: tsfm_tutorial.tex
+          working_directory: slides
+      - uses: actions/upload-artifact@v4
+        with:
+          name: slides
+          path: slides/tsfm_tutorial.pdf
+      - if: github.ref == 'refs/heads/main' && github.event_name != 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release view slides > /dev/null 2>&1 ||
+            gh release create slides --title "Slides" --latest=false \
+              --notes "The slides of the tutorial, rebuilt on every change to slides/ on main."
+          gh release upload slides slides/tsfm_tutorial.pdf --clobber

@@ -3,7 +3,7 @@ name: Notebooks
 # Checks the notebook conventions (pre-commit hooks, see CONTRIBUTING.md) and
 # executes notebooks with their exercise cells replaced by their solutions.
 # PRs and pushes run the notebooks they touch. A change to any other file,
-# except in notes/, runs them all. Run it by hand for a status
+# except in notes/ and slides/, runs them all. Run it by hand for a status
 # of every notebook:
 #   gh workflow run notebooks.yml -f notebooks=all
 
@@ -50,7 +50,7 @@ jobs:
           if not request:
               diff = git("diff", "--name-only", os.environ["BASE"], "HEAD")
               changed = diff.stdout.split() if diff.returncode == 0 else [".github/"]
-              others = [c for c in changed if not c.endswith(".ipynb") and not c.startswith("notes/")]
+              others = [c for c in changed if not c.endswith(".ipynb") and not c.startswith(("notes/", "slides/"))]
               request = "all" if others else " ".join(c for c in changed if c in nbs)
           picked = nbs if request == "all" else [n for n in nbs if any(n.startswith(r) for r in request.split())]
           print("\n".join(picked))

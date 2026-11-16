@@ -1,0 +1,130 @@
+% tm: beamer twin of the reveal.js `tm` theme (green and ochre on cream).
+% Use with \documentclass[aspectratio=169]{beamer} and \usetheme{tm}.
+%
+% Commands added on top of beamer:
+%   \kicker{Venue}              ochre line above the title on the title page
+%   \titlegraphic{logos}        logos bottom right of the title page (beamer)
+%   \sectionframe{Title}{sub}   numbered section opener, starts a \section
+%   \takeaway{sentence}         closing line of a slide, after an ochre arrow
+%   \titlecite{Author, year}    citation pushed to the right end of a frame title
+%   \alert{x} \muted{x}         ochre emphasis, small grey aside
+%   \hl{x} \hla{x}              colour a term green or ochre, also in math
+%   \head{x}                    green header cell of a booktabs table
+%   \figtodo{what}              dashed placeholder for a figure still to make
+%   block / alertblock / exampleblock render as cards in green / ochre / grey
+\mode<presentation>
+
+\RequirePackage[default,semibold]{sourcesanspro}
+\RequirePackage[scale=.9]{sourcecodepro}
+\RequirePackage[T1]{fontenc}
+\RequirePackage[utf8]{inputenc}
+\RequirePackage{amssymb}
+\RequirePackage{booktabs}
+\RequirePackage{tikz}
+\usetikzlibrary{positioning}
+\RequirePackage[most]{tcolorbox}
+
+\definecolor{tmink}{HTML}{24221D}
+\definecolor{tmmuted}{HTML}{716B5E}
+\definecolor{tmpaper}{HTML}{F5F0E4}
+\definecolor{tmprimary}{HTML}{1F6F50}
+\definecolor{tmaccent}{HTML}{A8680F}
+\definecolor{tmtint}{HTML}{E8E0CB}
+\definecolor{tmline}{HTML}{D6CCB6}
+\definecolor{tmrule}{HTML}{C4B89A}
+\definecolor{tmcode}{HTML}{ECE5D4}
+\definecolor{tmcard}{HTML}{FBF8F1}
+
+\usefonttheme{professionalfonts}
+\beamer@centeredfalse  % frames start at the top, as in reveal
+\setbeamertemplate{navigation symbols}{}
+\setbeamersize{text margin left=9mm, text margin right=9mm}
+
+\setbeamercolor{normal text}{fg=tmink, bg=tmpaper}
+\setbeamercolor{background canvas}{bg=tmpaper}
+\setbeamercolor{structure}{fg=tmprimary}
+\setbeamercolor{alerted text}{fg=tmaccent}
+\setbeamerfont{alerted text}{series=\bfseries}
+\setbeamercolor{frametitle}{fg=tmprimary}
+\setbeamerfont{frametitle}{size=\Large, series=\bfseries}
+\setbeamercolor{caption name}{fg=tmmuted}
+\setbeamerfont{caption}{size=\scriptsize}
+\setbeamercolor{caption}{fg=tmmuted}
+\setbeamertemplate{caption}{\centering\insertcaption\par}
+
+% Lists: green triangles, ochre numbers
+\setbeamertemplate{itemize item}{\raisebox{.1ex}{\scriptsize\color{tmprimary}$\blacktriangleright$}}
+\setbeamertemplate{itemize subitem}{\raisebox{.2ex}{\tiny\color{tmprimary}$\blacktriangleright$}}
+\setbeamertemplate{enumerate item}{\color{tmaccent}\bfseries\insertenumlabel.}
+\setlength{\leftmargini}{1.2em}
+
+% Frame title as a claim: green, over a thin rule, section name top right
+\setbeamertemplate{headline}{%
+  \vskip2.5mm\hfill{\tiny\color{tmaccent}\strut\insertsectionhead}\hspace*{9mm}}
+\setbeamertemplate{frametitle}{%
+  \vskip1mm
+  \parbox{\textwidth}{\raggedright\usebeamerfont{frametitle}\usebeamercolor[fg]{frametitle}\strut\insertframetitle\strut}\par
+  \vskip.6mm{\color{tmrule}\hrule height .4pt}\vskip1mm}
+
+% Footer: short title and slide number on a shared rule
+\setbeamertemplate{footline}{%
+  \hspace*{9mm}\parbox{\dimexpr\paperwidth-18mm}{%
+    {\color{tmrule}\hrule height .4pt}\vskip1mm
+    \tiny\color{tmmuted}\insertshorttitle\hfill\insertframenumber}%
+  \vskip2.5mm}
+
+% Title page: kicker, title over a rule, author and institute, logos bottom right
+\def\tm@kicker{}
+\newcommand{\kicker}[1]{\def\tm@kicker{#1}}
+\setbeamertemplate{title page}{%
+  \vfill
+  {\small\bfseries\color{tmaccent}\tm@kicker}\par\vskip2mm
+  \parbox{.82\textwidth}{\raggedright\huge\bfseries\color{tmprimary}\inserttitle}\par
+  \vskip3mm{\color{tmline}\rule{.82\textwidth}{.4pt}}\par\vskip3mm
+  {\bfseries\color{tmprimary}\insertauthor}\par\vskip1mm
+  {\small\color{tmmuted}\insertinstitute}\par
+  \vfill
+  \hfill\inserttitlegraphic\par\vskip2mm}
+
+% Section opener: green numbered badge, title over a rule, grey subtitle
+\newcommand{\sectionframe}[2]{%
+  \section{#1}
+  \begin{frame}[plain]
+    \vfill
+    \begin{tikzpicture}[baseline=(t.base)]
+      \node[fill=tmprimary, text=tmpaper, rounded corners=1.5pt, minimum size=2.2em,
+            font=\LARGE\bfseries] (n) {\thesection};
+      \node[right=.8em of n, font=\huge\bfseries, text=tmprimary, anchor=west] (t) {#1};
+      \draw[tmrule, line width=.4pt] ([yshift=-.6em]n.south west) -- ++(\textwidth, 0);
+    \end{tikzpicture}\par\vskip3mm
+    {\large\color{tmmuted}#2}
+    \vfill
+  \end{frame}}
+
+% Cards: a tinted heading band over a light body, one tone per block kind
+\tcbset{tm card/.style={enhanced, arc=1.5pt, boxrule=.5pt, left=2mm, right=2mm,
+  top=1mm, bottom=1.5mm, toptitle=.8mm, bottomtitle=.8mm, fonttitle=\bfseries,
+  colback=tmcard, colframe=#1!30!tmpaper, colbacktitle=#1!14!tmcard, coltitle=#1,
+  fontupper=\small, before upper=\raggedright, before skip=1mm, after skip=2mm}}
+\setbeamertemplate{block begin}{\begin{tcolorbox}[tm card=tmprimary, title=\insertblocktitle]}
+\setbeamertemplate{block end}{\end{tcolorbox}}
+\setbeamertemplate{block alerted begin}{\begin{tcolorbox}[tm card=tmaccent, title=\insertblocktitle]}
+\setbeamertemplate{block alerted end}{\end{tcolorbox}}
+\setbeamertemplate{block example begin}{\begin{tcolorbox}[tm card=tmmuted, title=\insertblocktitle]}
+\setbeamertemplate{block example end}{\end{tcolorbox}}
+
+% Tables as booktabs, header cells in green
+\setlength{\heavyrulewidth}{.8pt}
+\setlength{\lightrulewidth}{.4pt}
+\newcommand{\head}[1]{{\color{tmprimary}\bfseries #1}}
+
+\newcommand{\takeaway}[1]{\par\vskip3mm{\bfseries{\color{tmaccent}$\Rightarrow$}\ #1}\par}
+\newcommand{\titlecite}[1]{\hfill{\normalfont\scriptsize\color{tmmuted}#1}}
+\newcommand{\muted}[1]{{\footnotesize\color{tmmuted}#1}}
+\newcommand{\hl}[1]{{\color{tmprimary}#1}}
+\newcommand{\hla}[1]{{\color{tmaccent}#1}}
+\newcommand{\figtodo}[1]{%
+  \tikz\node[draw=tmrule, dashed, fill=tmcard, text=tmmuted, text width=.8\linewidth,
+             minimum height=1.8cm, align=center, font=\footnotesize]{Figure to make: #1};}
+
+\mode<all>

@@ -17,3 +17,6 @@
 
 # source material, kept locally and never committed
 inspiration/
+
+# LaTeX build output of the slides
+slides/build/

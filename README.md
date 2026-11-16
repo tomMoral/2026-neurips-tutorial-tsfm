@@ -17,9 +17,16 @@ The repository is flat, with one notebook per part at its root.
 - `data/`: the bike counts and the Paris weather (Open-Meteo, CC BY 4.0).
 - `solutions/`: the exercise solutions.
 - `notes/`: the plan of the session and the model cards.
+- `slides/`: the beamer slides, with the scripts of their figures.
 
 The notebooks are meant for a GPU runtime on Colab. They also run on CPU, more
 slowly.
+
+## Slides
+
+[Download the slides (PDF)](https://github.com/tomMoral/2026-neurips-tutorial-tsfm/releases/download/slides/tsfm_tutorial.pdf).
+The `Slides` workflow rebuilds them on every change to `slides/` on `main`.
+To build them locally, run `latexmk -pdf -outdir=build tsfm_tutorial.tex` in `slides/`.
 
 ## Setup
 
